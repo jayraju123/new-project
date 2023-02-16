@@ -1,0 +1,101 @@
+LOOPS:
+------
+Ansible offers the loop, with_<lookup>, and until keywords to execute a task multiple times. 
+Examples of commonly-used loops include changing ownership on several files and/or directories with the file module, creating multiple users with the user module, and repeating a polling step until a certain result is reached.
+Using loops saves administrators from the need to wirte multiple tasks that use the same module.
+Ansible supports iterating a task over a set of iteams using the loop keyword.
+
+
+Example: (without looping)
+
+- hosts: webservers
+  become: true
+  become_user: root
+  tasks:
+    - name: Apache is running
+      service:
+        name: httpd
+        state: started
+    - name: FTP is running
+      service:
+        name: vsftpd
+        state: started
+
+Using LOOP:
+------------
+- hosts: webservers
+  become: true
+  become_user: root
+  tasks:
+    - name: Apache & FTP are running
+      service:
+        name: "{{ item }}"
+        state: started
+      loop:
+        - httpd
+        - vsftpd
+$ansible-playbook loop.yml -K
+
+
+Loops over a list of variables (Hashes):
+----------------------------------------
+Example1:
+---
+- hosts: webservers
+  become: true
+  become_user: root
+  vars:
+    my_services:
+      - httpd
+      - vsftpd
+  tasks:
+    - name: Apache & FTP are Running
+      service:
+        name: "{{ item }}"
+        state: started
+      loop: "{{ my_services }}"
+...
+
+Example2:
+---
+- hosts: webservers
+  become: true
+  become_user: root
+  tasks:
+    - name: User Exist
+      user:
+        name: "{{ item.name }}"
+        groups: "{{ item.groups }}"
+      loop:
+        - name: ram
+          groups: ayodhya
+        - name: ravan
+          groups: lanka
+        - name: sita
+          groups: nepal
+---
+
+###Groups are exist in the agent
+#groupadd ayodhya
+#groupadd lanka
+#groupadd nepal
+
+$ansible-playbook loop2.yml -K
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

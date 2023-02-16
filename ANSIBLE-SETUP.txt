@@ -1,0 +1,112 @@
+Setting Hostnames:
+-----------------
+#hostname server
+#hostname agent1
+#hostname agent2
+#vi /etc/hostname
+
+Setting IP-ADDRESS:
+-------------------
+#cd /etc/sysconfig/network-scripts
+#ls
+#vi ifcfg-ens160
+
+
+Resolving IP To Hostname:
+-------------------------
+#vi /etc/hosts
+10.10.10.50  server
+10.10.10.51  agent1
+10.10.10.52  agent2
+
+Connecting through SSH with Hostnames:
+--------------------------------------
+#ssh agent1
+#ssh agent2
+#ssh server
+
+Create a Normal user: (setup for all)
+-------------------------------------
+#useradd raju
+#passwd raju
+
+settingup sudo privileges:
+-------------------------
+#visudo
+raju   ALL=(ALL) NOPASSWD: ALL
+
+Settingup passwordless login for user raju:
+-------------------------------------------
+#su - raju  (from server)
+$ssh-keygen
+$cd ~/.ssh
+$ls
+$ssh-copy-id -i id_rsa.pub raju@agent1
+$ssh-copy-id -i id_rsa.pub raju@agent2
+$ssh raju@1gent1
+$ssh raju@agent2
+
+Setting up repository:
+----------------------
+Local repo
+epel repo
+#yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
+or
+
+#dnf install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+
+[ https://fedoraproject.org/wiki/EPEL ]
+
+Installing Ansible: (Control Node)
+-------------------
+#yum repolist
+#yum install ansible -y
+#ansible --version
+
+#cd /etc/ansible
+#ll
+#chmod 777 hosts
+#su - raju
+$vi /etc/ansible/hosts
+[webservers]
+agent1
+agent2
+
+$ansible -m command -a "uptime" webservers
+m: Module
+a: Argument
+$ansible -m command -a "vgs" webservers
+
+
+NOTE: $ansible -m command -a "vgs" webservers --become -K
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
